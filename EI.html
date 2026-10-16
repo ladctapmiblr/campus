@@ -7,107 +7,52 @@
 <style>
   *{box-sizing:border-box}
   :root{
-    --bg:#f4f6fb;
-    --card:#ffffff;
-    --ink:#1f2430;
-    --muted:#6b7280;
-    --line:#e3e7ef;
-    --accent:#3b5bfd;
-    --accent-soft:#eef1ff;
-    --danger:#d64545;
+    --bg:#f4f6fb; --card:#ffffff; --ink:#1f2430; --muted:#6b7280;
+    --line:#e3e7ef; --accent:#3b5bfd; --accent-soft:#eef1ff; --danger:#d64545;
   }
   html,body{margin:0;padding:0}
   body{
-    background:var(--bg);
-    color:var(--ink);
+    background:var(--bg); color:var(--ink);
     font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    padding:24px 16px 140px;
-    -webkit-font-smoothing:antialiased;
+    padding:24px 16px 140px; -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:860px;margin:0 auto}
-
-  /* ---------- header ---------- */
   .top{margin-bottom:20px}
   .top h1{font-size:24px;margin:0 0 4px}
   .top .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
   .progress{height:8px;background:#e6e9f2;border-radius:99px;overflow:hidden}
   .progress .bar{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s ease}
   .pagemeta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:6px;font-weight:600}
-
-  /* ---------- name block ---------- */
-  .nameblock{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:16px;margin-bottom:14px;
-  }
+  .nameblock{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
   .nameblock label{display:block;font-weight:600;margin-bottom:8px}
-  .nameblock input{
-    width:100%;padding:11px 12px;font-size:16px;font-family:inherit;
-    border:1px solid var(--line);border-radius:10px;outline:none;background:#fbfcff;color:var(--ink);
-  }
+  .nameblock input{width:100%;padding:11px 12px;font-size:16px;font-family:inherit;border:1px solid var(--line);border-radius:10px;outline:none;background:#fbfcff;color:var(--ink)}
   .nameblock input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
   .nameblock input.missing-input{border-color:var(--danger);background:#fff5f5}
-
-  /* ---------- question card ---------- */
-  .q{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:16px;margin:0 0 12px;
-  }
+  .q{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 12px}
   .q.missing{border-color:var(--danger);box-shadow:0 0 0 3px #fdecec}
   .qtext{margin:0 0 12px;font-weight:600;font-size:15.5px}
-
   .scale{display:flex;gap:8px}
-  .opt{
-    position:relative;flex:1 1 0;min-width:0;
-    display:flex;align-items:center;justify-content:center;
-    padding:11px 0;border:1px solid var(--line);border-radius:10px;
-    background:#fbfcff;cursor:pointer;user-select:none;
-    transition:background .15s,border-color .15s,color .15s;
-  }
+  .opt{position:relative;flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;padding:11px 0;border:1px solid var(--line);border-radius:10px;background:#fbfcff;cursor:pointer;user-select:none;transition:background .15s,border-color .15s,color .15s}
   .opt input{position:absolute;opacity:0;width:0;height:0;margin:0}
   .opt .num{font-weight:700;font-size:15px;color:var(--muted)}
   .opt:hover{border-color:var(--accent);background:var(--accent-soft)}
   .opt:has(input:checked){background:var(--accent);border-color:var(--accent)}
   .opt:has(input:checked) .num{color:#fff}
   .opt input:focus-visible + .num{outline:2px solid var(--accent);outline-offset:6px;border-radius:4px}
-
-  .legend{
-    font-size:12.5px;color:var(--muted);margin:0 0 12px;
-    background:#eef1ff;border:1px solid #dde3ff;border-radius:10px;
-    padding:8px 12px;text-align:center;font-weight:600;
-  }
-
-  /* ---------- bottom bar ---------- */
-  .bottom{
-    position:fixed;left:0;right:0;bottom:0;z-index:20;
-    background:rgba(255,255,255,.95);
-    backdrop-filter:blur(8px);
-    border-top:1px solid var(--line);
-  }
-  .bottom .inner{
-    max-width:860px;margin:0 auto;padding:10px 16px;
-    display:flex;align-items:center;gap:12px;
-  }
+  .legend{font-size:12.5px;color:var(--muted);margin:0 0 12px;background:#eef1ff;border:1px solid #dde3ff;border-radius:10px;padding:8px 12px;text-align:center;font-weight:600}
+  .bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+  .bottom .inner{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px}
   .alert{color:var(--danger);font-size:13.5px;font-weight:700}
   .btns{display:flex;gap:10px;margin-left:auto}
-  .btn{
-    font:inherit;font-weight:600;font-size:15px;
-    padding:11px 22px;border-radius:10px;border:1px solid var(--accent);
-    background:var(--accent);color:#fff;cursor:pointer;transition:opacity .15s,background .15s;
-  }
+  .btn{font:inherit;font-weight:600;font-size:15px;padding:11px 22px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;transition:opacity .15s,background .15s}
   .btn:hover{opacity:.9}
   .btn.ghost{background:#fff;color:var(--accent)}
   .btn.ghost:hover{background:var(--accent-soft);opacity:1}
   .btn[disabled]{opacity:.55;cursor:not-allowed}
   .btn[hidden]{display:none}
-
-  /* ---------- done screen ---------- */
-  .done{
-    background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:48px 24px;text-align:center;
-  }
+  .done{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:48px 24px;text-align:center}
   .done h2{margin:0 0 8px;font-size:22px}
   .done p{margin:0;color:var(--muted)}
-
   @media (max-width:520px){
     .q{padding:14px}
     .scale{gap:5px}
@@ -152,34 +97,26 @@
 <script>
 /* ============================================================
    1) CONFIGURATION — Google Form target
-   ============================================================
-   formAction : your form's POST endpoint
-                https://docs.google.com/forms/d/e/<FORM_ID>/formResponse
-   nameEntry  : the entry ID for the "Name" short-answer question
    ============================================================ */
 const CONFIG = {
   formAction: "https://docs.google.com/forms/d/e/PASTE_YOUR_FORM_ID_HERE/formResponse",
-  nameEntry:  "entry.1000000"   // <-- Name question entry ID
+  nameEntry:  "entry.1000000"
 };
 
 /* ============================================================
    2) QUESTIONS + GOOGLE FORM ENTRY IDs
-   ------------------------------------------------------------
-   Replace each "entry.1000xxx" with the real entry ID from
-   your Google Form (Get pre-filled link -> inspect the URL).
-   Every line = one question, its text and its entry ID.
    ============================================================ */
 const QUESTIONS = [
   /* ---------- PAGE 1 : Q1 – Q20 ---------- */
-  { id: "1",  text: "If asked to list my top three strengths, I would have hard time listing them.",  entry: "entry.1442792584" },
-  { id: "2",  text: "I find myself feeling nervous about situations or events, and I don't even know why.",  entry: "entry.1666029750" },
-  { id: "3",  text: "I adjust my behavior depending on who I am interacting with (e.g. calm and friendly with a child, serious and professional with my boss, etc.).",  entry: "entry.1803454888" },
-  { id: "4",  text: "Once a pessimistic thought pops into my head, it's like a floodgate opened - my thoughts get more and more negative.",  entry: "entry.1608058289" },
-  { id: "5",  text: "Even when I don't want to, I consistently put other people's needs ahead of my own.",  entry: "entry.305702049" },
-  { id: "6",  text: "I spend hours wondering what people meant by offhand (not well considered) remarks.",  entry: "entry.141344783" },
-  { id: "7",  text: "I have certain compulsive habits that I just can't seem to stop (e.g. overeating, smoking, complaining etc.).",  entry: "entry.49596397" },
-  { id: "8",  text: "When something is bothering me, I cannot stop thinking about it.",  entry: "entry.1521154758" },
-  { id: "9",  text: "I like learning new things.",  entry: "entry.117660150" },
+  { id: "1",  text: "If asked to list my top three strengths, I would have hard time listing them.", entry: "entry.1442792584" },
+  { id: "2",  text: "I find myself feeling nervous about situations or events, and I don't even know why.", entry: "entry.1666029750" },
+  { id: "3",  text: "I adjust my behavior depending on who I am interacting with (e.g. calm and friendly with a child, serious and professional with my boss, etc.).", entry: "entry.1803454888" },
+  { id: "4",  text: "Once a pessimistic thought pops into my head, it's like a floodgate opened - my thoughts get more and more negative.", entry: "entry.1608058289" },
+  { id: "5",  text: "Even when I don't want to, I consistently put other people's needs ahead of my own.", entry: "entry.305702049" },
+  { id: "6",  text: "I spend hours wondering what people meant by offhand (not well considered) remarks.", entry: "entry.141344783" },
+  { id: "7",  text: "I have certain compulsive habits that I just can't seem to stop (e.g. overeating, smoking, complaining etc.).", entry: "entry.49596397" },
+  { id: "8",  text: "When something is bothering me, I cannot stop thinking about it.", entry: "entry.1521154758" },
+  { id: "9",  text: "I like learning new things.", entry: "entry.117660150" },
   { id: "10", text: "When I need to do something difficult or unpleasant, I find it hard to motivate myself to get started.", entry: "entry.662459254" },
   { id: "11", text: "If a person I'm speaking to seems ill-at-ease or intimidated, I will attempt to make him/her more comfortable (e.g. take a different posture, make my tone lighter, laugh, etc.).", entry: "entry.325311438" },
   { id: "12", text: "I avoid fights, expressing my opinion, or doing what I want for fear that I will upset others or lose their love/friendship.", entry: "entry.567036304" },
@@ -208,7 +145,7 @@ const QUESTIONS = [
   { id: "33", text: "If the situation calls for it, I can appear to be having a good time even if I am not enjoying myself.", entry: "entry.2084602152" },
   { id: "34", text: "I tend to assume the worst of people.", entry: "entry.1483672375" },
   { id: "35", text: "I find it easy to walk over and offer my support even when others feel it embarrassing to do so.", entry: "entry.1053889743" },
-  { id: "36", text: "I don't seem to have any power at all over other people's feeling.", entry: "entry.1767611630" }
+  { id: "36", text: "I don't seem to have any power at all over other people's feelings.", entry: "entry.1767611630" }
 ];
 
 /* ============================================================
@@ -243,7 +180,6 @@ const doneScreen = document.getElementById("done");
 
 let page = 1;
 
-/* -------- helpers -------- */
 function pageQuestions(p) {
   return QUESTIONS.slice((p - 1) * PER_PAGE, p * PER_PAGE);
 }
@@ -253,7 +189,6 @@ function pageOfQid(qid) {
   return idx < 0 ? 1 : Math.floor(idx / PER_PAGE) + 1;
 }
 
-/* -------- build one question card -------- */
 function buildQuestion(q) {
   const card = document.createElement("div");
   card.className = "q";
@@ -296,14 +231,12 @@ function buildQuestion(q) {
   return card;
 }
 
-/* -------- build one page -------- */
 function buildPage(p) {
   const sec = document.createElement("section");
   sec.className = "page";
   sec.dataset.page = p;
   if (p !== 1) sec.hidden = true;
 
-  /* name field — page 1 only */
   if (p === 1) {
     const nb = document.createElement("div");
     nb.className = "nameblock";
@@ -324,19 +257,15 @@ function buildPage(p) {
     sec.appendChild(nb);
   }
 
-  /* scale legend */
   const legend = document.createElement("div");
   legend.className = "legend";
   legend.textContent = "1 = Completely agree  •  4 = Neutral  •  7 = Completely disagree";
   sec.appendChild(legend);
 
-  /* questions */
   pageQuestions(p).forEach(q => sec.appendChild(buildQuestion(q)));
-
   return sec;
 }
 
-/* -------- render all pages -------- */
 function render() {
   for (let p = 1; p <= TOTAL_PAGES; p++) {
     form.appendChild(buildPage(p));
@@ -344,10 +273,8 @@ function render() {
   updateUI();
 }
 
-/* -------- UI state -------- */
 function updateUI() {
   pageLabel.textContent = "Page " + page + " of " + TOTAL_PAGES;
-
   const pct = Math.round((page / TOTAL_PAGES) * 100);
   bar.style.width = pct + "%";
   pctLabel.textContent = pct + "%";
@@ -357,7 +284,6 @@ function updateUI() {
   submitBtn.hidden = page !== TOTAL_PAGES;
 }
 
-/* -------- navigation -------- */
 function showPage(target) {
   form.querySelector('.page[data-page="' + page + '"]').hidden = true;
   page = target;
@@ -366,36 +292,29 @@ function showPage(target) {
   updateUI();
 }
 
-/* -------- validation -------- */
 function validatePage(p) {
   const problems = [];
-
   if (p === 1) {
     const n = document.getElementById("respondentName");
     if (!n.value.trim()) problems.push(n);
   }
-
   pageQuestions(p).forEach(q => {
     if (!form.querySelector('input[name="' + q.id + '"]:checked')) {
       problems.push(form.querySelector('.q[data-qid="' + q.id + '"]'));
     }
   });
-
   return problems;
 }
 
 function validateAll() {
   const problems = [];
-
   const n = document.getElementById("respondentName");
   if (!n.value.trim()) problems.push(n);
-
   QUESTIONS.forEach(q => {
     if (!form.querySelector('input[name="' + q.id + '"]:checked')) {
       problems.push(form.querySelector('.q[data-qid="' + q.id + '"]'));
     }
   });
-
   return problems;
 }
 
@@ -405,7 +324,6 @@ function flagProblems(problems) {
     if (el.classList.contains("q")) el.classList.add("missing");
     else el.classList.add("missing-input");
   });
-
   if (problems.length) {
     const first = problems[0];
     if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -413,40 +331,29 @@ function flagProblems(problems) {
   }
 }
 
-function setAlert(msg) {
-  alertBox.textContent = msg || "";
-}
-function clearAlert() {
-  alertBox.textContent = "";
-}
+function setAlert(msg) { alertBox.textContent = msg || ""; }
+function clearAlert()  { alertBox.textContent = ""; }
 
-/* -------- payload -------- */
 function buildPayload() {
   const data = new URLSearchParams();
-
   data.append(CONFIG.nameEntry, document.getElementById("respondentName").value.trim());
-
   QUESTIONS.forEach(q => {
     const checked = form.querySelector('input[name="' + q.id + '"]:checked');
     data.append(q.entry, checked ? checked.value : "");
   });
-
   return data;
 }
 
-/* -------- send to Google Forms -------- */
 async function sendToGoogleForms() {
   const body = buildPayload();
-
   await fetch(CONFIG.formAction, {
     method: "POST",
-    mode: "no-cors",                       // Google Forms blocks CORS reads; this still delivers
+    mode: "no-cors",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString()
   });
 }
 
-/* -------- events -------- */
 form.addEventListener("change", e => {
   const card = e.target.closest(".q");
   if (card) card.classList.remove("missing");
@@ -462,10 +369,7 @@ form.addEventListener("input", e => {
 
 nextBtn.addEventListener("click", () => {
   const problems = validatePage(page);
-  if (problems.length) {
-    flagProblems(problems);
-    return;
-  }
+  if (problems.length) { flagProblems(problems); return; }
   clearAlert();
   showPage(page + 1);
 });
@@ -477,14 +381,11 @@ prevBtn.addEventListener("click", () => {
 
 submitBtn.addEventListener("click", async () => {
   const problems = validateAll();
-
   if (problems.length) {
     const first = problems[0];
     const targetPage = first.classList.contains("q")
       ? pageOfQid(first.dataset.qid)
       : 1;
-
-    // Switch page FIRST, then flag/scroll so the element is visible.
     if (targetPage !== page) showPage(targetPage);
     flagProblems(problems);
     return;
@@ -508,9 +409,7 @@ submitBtn.addEventListener("click", async () => {
   }
 });
 
-/* -------- go -------- */
 render();
 </script>
-
 </body>
 </html>
