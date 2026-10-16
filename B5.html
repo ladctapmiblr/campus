@@ -1,2 +1,137 @@
 
-hello
+Replace each "entry.1000xxx" with the real entry ID from
+   your Google Form (Get pre-filled link -> inspect the URL).
+   Every line = one question, its text and its entry ID.
+   ============================================================ */
+const QUESTIONS = [
+  /* ---------- PAGE 1 : Q1 – Q20 ---------- */
+  { id: "q1",  text: "I always put other people before me.",  entry: "entry. 320304801" },
+  { id: "q2",  text: " I prefer to use tools and techniques to express myself rather than be extempore.",  entry: "entry. 208352163" },
+  { id: "q3",  text: "I make detailed plans about my classes.",  entry: "entry. 44281645" },
+  { id: "q4",  text: "I feel stressed often.",  entry: "entry. 1693266205" },
+  { id: "q5",  text: "I love socializing, parties, going out with friends and restaurants.",  entry: "entry. 1282781067" },
+  { id: "q6",  text: "Though I like to help others, I rarely find time.",  entry: "entry. 1532890308" },
+  { id: "q7",  text: "I can imagine and visualize many things I have never seen.",  entry: "entry. 118127876" },
+  { id: "q8",  text: "I am always calm and composed.",  entry: "entry. 1783167424" },
+  { id: "q9",  text: "My studies or preparation for work often get delayed because of various distractions.",  entry: "entry. 501929734" },
+  { id: "q10", text: "I take long time to make friends.", entry: "entry. 40357179" },
+  { id: "q11", text: "I feel great sympathy for others.", entry: "entry. 495995274" },
+  { id: "q12", text: "I take quite some time to understand things.", entry: "entry. 1693330125" },
+  { id: "q13", text: "When I do a problem or write important notes, I always do rough work and check again.", entry: "entry. 489112697" },
+  { id: "q14", text: "I tend to keep worrying about things going right and wrong.", entry: "entry. 67302311" },
+  { id: "q15", text: "I have lot of friends in other sections and in hostels", entry: "entry. 1454567788" },
+  { id: "q16", text: "I do not like playing around with children too much.”, entry: "entry. 2133312763" },
+  { id: "q17", text: "I get plenty of ideas on various issues.", entry: "entry. 828271895" },
+  { id: "q18", text: "I do not get angry easily.", entry: "entry. 274849181" },
+  { id: "q19", text: "Though I make plans, I often find it difficult to stick to it.", entry: "entry. 2044618180" },
+  { id: "q20", text: “I don’t think that I mix with many friends naturally and with ease.", entry: "entry. 1850079564" },
+ 
+  /* ---------- PAGE 2 : Q21 – Q40 ---------- */
+  { id: "q21", text: "I am gentle and my heart often bleeds for others.", entry: "entry. 1301381979" },
+{ id: "q22", text: "I do not prefer to do multitasking.", entry: "entry. 396977804" },
+  { id: "q23", text: "Whenever I use a thing, I am particular to ensure that it is placed back in the right place.", entry: "entry. 1600065878" },
+  { id: "q24", text: "I get quite upset even if a small thing goes wrong.", entry: "entry. 1994638409" },
+  { id: "q25", text: “In a party or social event like a marriage, I am a hit as I go round and talk to everyone.", entry: "entry. 1994934439" },
+  { id: "q26", text: "I have very good friends; but they are just a handful.", entry: "entry. 1245981911" },
+  { id: "q27", text: “I like to use difficult words and sentences when I speak and write.", entry: "entry. 1232977456" },
+  { id: "q28", text: "I do not remember to have panicked often.", entry: "entry. 1181065271" },
+  { id: "q29", text: "I often have to spend time searching for my belongings when I need them.", entry: "entry. 151208126" },
+  { id: "q30", text: "I like to work back stage rather than front stage.", entry: "entry. 232027115" },
+  { id: "q31", text: "I feel the emotions of other people very strongly.", entry: "entry. 907540777" },
+  { id: "q32", text: "I find it very difficult to understand modern art.", entry: "entry. 869228450
+" },
+  { id: "q33", text: "I like to review my computer desktop frequently and keep them ordered well.", entry: "entry. 1191504344" },
+  { id: "q34", text: "My mood changes often.“, entry: "entry. 1321303028" },
+  { id: "q35", text: " love family get together and take every opportunity to join them", entry: "entry. 1414964280" },
+  { id: "q36", text: "I seldom appreciate people openly.", entry: "entry. 1304304259" },
+  { id: "q37", text: "I don’t miss a day to spend time reflecting on things, ideas, and decisions.", entry: "entry. 2044529569" },
+  { id: "q38", text: "I don’t get offended easily when criticized.", entry: "entry. 182921743" },
+  { id: "q39", text: "When I work, there is always a mess that others have to clean up.", entry: "entry. 256511492" },
+  { id: "q40", text: "I don’t give opinion unless coaxed.", entry: "entry. 86801602" },
+ 
+  /* ---------- PAGE 3 : Q41 – Q60 ---------- */
+  { id: "q41", text: "I make people feel very much at ease.", entry: "entry. 1056604768" },
+  { id: "q42", text: "I am never interested in abstract things like universe, beauty etc.", entry: "entry. 1559653462" },
+  { id: "q43", text: "I follow a strict time table for my class/other works.", entry: "entry. 1791331584" },
+  { id: "q44", text: "I frequently feel lonely and left alone.", entry: "entry. 1372559310" },
+  { id: "q45", text: "I like to dress to be the centre of attraction.", entry: "entry. 382667755" },
+  { id: "q46", text: "If I don’t like a person, I don’t hesitate to take a dig at him/her.", entry: "entry. 452337042" },
+  { id: "q47", text: "I like to discuss concepts and principles.", entry: "entry. 1992983143" },
+  { id: "q48", text: "I seldom complain or grumble.", entry: "entry. 1516749740" },
+{ id: "q49", text: "I tend to put off things till the last moment.", entry: "entry. 1564792377" },
+  { id: "q50", text: "I don’t like to draw attention to myself.”, entry: "entry. 449922772" },
+  { id: "q51", text: “Whenever I meet someone, I wish, waive and ask their well-being.", entry: "entry. 197392682" },
+  { id: "q52", text: "My imagination capacity is not too good.", entry: "entry. 21902431" },
+  { id: "q53", text: "I like to work very hard always and expect others to do so.", entry: "entry. 1102215440" },
+  { id: "q54", text: "I get irritated very quickly.", entry: "entry. 1395372699" },
+  { id: "q55", text: "I like to take charge of people and give them directions.", entry: "entry. 1691420987" },
+  { id: "q56", text: "I don’t spend too much time to understand other people’s thoughts and feelings.”, entry: "entry. 1237463220" },
+  { id: "q57", text: "I grasp complex things quickly.", entry: "entry. 1738550538" },
+  { id: "q58", text: "I don’t mind harsh criticism by others.", entry: "entry. 1452255080" },
+  { id: "q59", text: "I often neglect my work, self-development and duties.", entry: "entry. 764890989" },
+  { id: "q60", text: "When guests come home, I don’t show great enthusiasm to entertain them.", entry: "entry. 1592956743" },
+ 
+  /* ---------- PAGE 4 : Q61 – Q80 ---------- */
+  { id: "q61", text: "Whenever I feel someone is in trouble, I quickly comfort them.", entry: "entry. 221685810" },
+  { id: "q62", text: "I avoid people who do difficult and complex things.", entry: "entry. 2082409257" },
+  { id: "q63", text: "I always plan things systematically, write them and follow through.", entry: "entry. 1173065786" },
+  { id: "q64", text: "I feel upset often.", entry: "entry. 1427967490" },
+  { id: "q65", text: “I know how to keep others interested in my talk and actions.", entry: "entry. 2119432402" },
+  { id: "q66", text: "I don’t feel much concern for other people.", entry: "entry. 1652079217" },
+  { id: "q67", text: "I can handle a lot of information.", entry: "entry. 740024284" },
+  { id: "q68", text: "I rarely feel upset.", entry: "entry. 1265124099" },
+  { id: "q69", text: "I often spend time without considering its purposefulness.", entry: "entry. 15917086" },
+  { id: "q70", text: "If I have to sell some tickets, for an event, I have difficulty approaching people for it.", entry: "entry. 1424222204" },
+  { id: "q71", text: "I always find ways to thank others even for little things.", entry: "entry. 557334925" },
+  { id: "q72", text: "When someone describes a new thing, I have difficulty imagining how it is.", entry: "entry. 2121414837" },
+  { id: "q73", text: "I do my work neatly, ensure that it is always perfect and expect others to do so.", entry: "entry. 1066289774" },
+  { id: "q74", text: "I tend to feel scared and threatened easily.", entry: "entry. 741252437" },
+  { id: "q75", text: "I like to be around with a lot of friends even if they are not close ones.", entry: "entry. 795344038" },
+  { id: "q76", text: "I don’t like to connect with other people just for the sake of it.", entry: "entry. 583053188" },
+  { id: "q77", text: "I love to read difficult things like Shakespeare or some complex economic concepts.", entry: "entry. 118462585" },
+  { id: "q78", text: "I seldom care for small irritants.", entry: "entry. 919311988" },
+  { id: "q79", text: "Whenever I do a work, I usually have something left over to make it perfect.", entry: "entry. 978679697" },
+  { id: "q80", text: "I don’t chat a lot with others.", entry: "entry. 655726392" },
+ 
+  /* ---------- PAGE 5 : Q81 – Q100 ---------- */
+  { id: "q81",  text: "For me others are more important than I.",  entry: "entry. 551922020" },
+  { id: "q82",  text: "I don’t enjoy reading an article which is difficult to understand.",  entry: "entry. 26051769" },
+  { id: "q83",  text: "I love order and regularity in class and in life.",  entry: "entry. 1480118578" },
+  { id: "q84",  text: "I get overwhelmed with emotions such as anger, sadness, fear etc.”,  entry: "entry. 1554560889" },
+  { id: "q85",  text: "If there is a new committee to be formed, I prefer to let others take the lead.",  entry: "entry. 2083085765" },
+  { id: "q86",  text: "I am very secretive about my life and people cannot come to know me easily.",  entry: "entry. 1416261568" },
+  { id: "q87",  text: "I don’t like to dig deeper and deeper into a subject.",  entry: "entry. 995887886" },
+  { id: "q88",  text: "I show coolness always.",  entry: "entry. 1443288515" },
+  { id: "q89",  text: "I get distracted easily.",  entry: "entry. 552316277" },
+  { id: "q90",  text: "If someone insults me, I prefer to bottle up my feelings rather than talk it out with him/her.",  entry: "entry. 1072067307" },
+  { id: "q91",  text: "I take every opportunity to help others even if the job is small.",  entry: "entry. 485479235" },
+  { id: "q92",  text: "I prefer to do routine things than ones with a lot of uncertainties.",  entry: "entry. 73040778" },
+  { id: "q93",  text: "If I see something messy, I will always clean it up.",  entry: "entry. 1247888621" },
+  { id: "q94",  text: "I get caught up in personal problems and tend to take a long time to resolve them.",  entry: "entry. 362479496" },
+  { id: "q95",  text: "I can handle challenging situations like organizing an event for an institution.",  entry: "entry. 1640685985" },
+  { id: "q96",  text: "Before I take a decision, I don’t particularly examine its impact on feelings on all others.",  entry: "entry. 1012002548" },
+  { id: "q97",  text: "I like to try out new things even if it is risky.",  entry: "entry. 393874733" },
+  { id: "q98",  text: "I rarely lose my temper.",  entry: "entry. 220324117" },
+  { id: "q99",  text: "My colleagues envy my room/office and work station for its systematic arrangements.",  entry: "entry. 1650708546" },
+  { id: "q100", text: "I am a very private person.", entry: "entry. 1914377303" }
+];
+ 
+/* ============================================================
+   3) LIKERT SCALE
+   ============================================================ */
+const LIKERT = [
+  "Strongly disagree",   // 1
+  "Disagree",            // 2
+  "Somewhat disagree",   // 3
+  "Neutral",             // 4
+  "Somewhat agree",  	// 5
+  "Agree",               // 6
+  "Strongly agree"   	// 7
+];
+ 
+
+
+
+
+
+
