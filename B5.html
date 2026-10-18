@@ -25,15 +25,15 @@
     -webkit-font-smoothing:antialiased;
   }
   .wrap{max-width:860px;margin:0 auto}
-
+ 
   /* ---------- header ---------- */
   .top{margin-bottom:20px}
   .top h1{font-size:24px;margin:0 0 4px}
   .top .sub{margin:0 0 14px;color:var(--muted);font-size:14px}
   .progress{height:8px;background:#e6e9f2;border-radius:99px;overflow:hidden}
-  .progress .bar{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s ease}
+  .progress .bar{height:100%;width:20%;background:var(--accent);border-radius:99px;transition:width .25s ease}
   .pagemeta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:6px;font-weight:600}
-
+ 
   /* ---------- name block ---------- */
   .nameblock{
     background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -46,7 +46,7 @@
   }
   .nameblock input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px var(--accent-soft)}
   .nameblock input.missing-input{border-color:var(--danger);background:#fff5f5}
-
+ 
   /* ---------- question card ---------- */
   .q{
     background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -54,28 +54,29 @@
   }
   .q.missing{border-color:var(--danger);box-shadow:0 0 0 3px #fdecec}
   .qtext{margin:0 0 12px;font-weight:600;font-size:15.5px}
-
-  .scale{display:flex;gap:8px}
+ 
+  /* Updated scale to stack text options */
+  .scale{display:flex;flex-direction:column;gap:8px}
   .opt{
-    position:relative;flex:1 1 0;min-width:0;
-    display:flex;align-items:center;justify-content:center;
-    padding:11px 0;border:1px solid var(--line);border-radius:10px;
+    position:relative;
+    display:flex;align-items:center;
+    padding:12px 16px;border:1px solid var(--line);border-radius:10px;
     background:#fbfcff;cursor:pointer;user-select:none;
     transition:background .15s,border-color .15s,color .15s;
   }
   .opt input{position:absolute;opacity:0;width:0;height:0;margin:0}
-  .opt .num{font-weight:700;font-size:15px;color:var(--muted)}
+  .opt .num{font-weight:600;font-size:15px;color:var(--muted)}
   .opt:hover{border-color:var(--accent);background:var(--accent-soft)}
   .opt:has(input:checked){background:var(--accent);border-color:var(--accent)}
   .opt:has(input:checked) .num{color:#fff}
-  .opt input:focus-visible + .num{outline:2px solid var(--accent);outline-offset:6px;border-radius:4px}
-
+  .opt input:focus-visible + .num{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+ 
   .legend{
     font-size:12.5px;color:var(--muted);margin:0 0 12px;
     background:#eef1ff;border:1px solid #dde3ff;border-radius:10px;
     padding:8px 12px;text-align:center;font-weight:600;
   }
-
+ 
   /* ---------- bottom bar ---------- */
   .bottom{
     position:fixed;left:0;right:0;bottom:0;z-index:20;
@@ -99,7 +100,7 @@
   .btn.ghost:hover{background:var(--accent-soft);opacity:1}
   .btn[disabled]{opacity:.55;cursor:not-allowed}
   .btn[hidden]{display:none}
-
+ 
   /* ---------- done screen ---------- */
   .done{
     background:var(--card);border:1px solid var(--line);border-radius:14px;
@@ -107,37 +108,36 @@
   }
   .done h2{margin:0 0 8px;font-size:22px}
   .done p{margin:0;color:var(--muted)}
-
+ 
   @media (max-width:520px){
     .q{padding:14px}
-    .scale{gap:5px}
-    .opt{padding:10px 0;border-radius:8px}
+    .opt{padding:10px 14px}
     .opt .num{font-size:14px}
     .btn{padding:10px 16px;font-size:14px}
   }
 </style>
 </head>
 <body>
-
+ 
 <div class="wrap">
   <header class="top">
     <h1>Survey</h1>
     <p class="sub">Please answer every statement on each page.</p>
     <div class="progress"><div class="bar" id="bar"></div></div>
     <div class="pagemeta">
-      <span id="pageLabel">Page 1</span>
-      <span id="pct"></span>
+      <span id="pageLabel">Page 1 of 5</span>
+      <span id="pct">20%</span>
     </div>
   </header>
-
+ 
   <form id="survey" novalidate></form>
-
+ 
   <div id="done" class="done" hidden>
     <h2>Thank you!</h2>
     <p>Your responses have been submitted.</p>
   </div>
 </div>
-
+ 
 <div class="bottom" id="bottomBar">
   <div class="inner">
     <span class="alert" id="alert" role="alert" aria-live="polite"></span>
@@ -148,7 +148,7 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
 /* ============================================================
    1) CONFIGURATION — Google Form target
@@ -157,33 +157,33 @@ const CONFIG = {
   formAction: "https://docs.google.com/forms/d/e/PASTE_YOUR_FORM_ID_HERE/formResponse",
   nameEntry:  "entry.1000000"
 };
-
+ 
 /* ============================================================
    2) QUESTIONS + GOOGLE FORM ENTRY IDs
    ============================================================ */
 const QUESTIONS = [
   /* ---------- PAGE 1 : Q1 – Q20 ---------- */
-  { id: "q1",  text: "I always put other people before me.", entry: "entry.320304801" },
-  { id: "q2",  text: "I prefer to use tools and techniques to express myself rather than be extempore.", entry: "entry.208352163" },
-  { id: "q3",  text: "I make detailed plans about my classes.", entry: "entry.44281645" },
-  { id: "q4",  text: "I feel stressed often.", entry: "entry.1693266205" },
-  { id: "q5",  text: "I love socializing, parties, going out with friends and restaurants.", entry: "entry.1282781067" },
-  { id: "q6",  text: "Though I like to help others, I rarely find time.", entry: "entry.1532890308" },
-  { id: "q7",  text: "I can imagine and visualize many things I have never seen.", entry: "entry.118127876" },
-  { id: "q8",  text: "I am always calm and composed.", entry: "entry.1783167424" },
-  { id: "q9",  text: "My studies or preparation for work often get delayed because of various distractions.", entry: "entry.501929734" },
+  { id: "q1",  text: "I always put other people before me.",  entry: "entry.320304801" },
+  { id: "q2",  text: "I prefer to use tools and techniques to express myself rather than be extempore.",  entry: "entry.208352163" },
+  { id: "q3",  text: "I make detailed plans about my classes.",  entry: "entry.44281645" },
+  { id: "q4",  text: "I feel stressed often.",  entry: "entry.1693266205" },
+  { id: "q5",  text: "I love socializing, parties, going out with friends and restaurants.",  entry: "entry.1282781067" },
+  { id: "q6",  text: "Though I like to help others, I rarely find time.",  entry: "entry.1532890308" },
+  { id: "q7",  text: "I can imagine and visualize many things I have never seen.",  entry: "entry.118127876" },
+  { id: "q8",  text: "I am always calm and composed.",  entry: "entry.1783167424" },
+  { id: "q9",  text: "My studies or preparation for work often get delayed because of various distractions.",  entry: "entry.501929734" },
   { id: "q10", text: "I take long time to make friends.", entry: "entry.40357179" },
   { id: "q11", text: "I feel great sympathy for others.", entry: "entry.495995274" },
   { id: "q12", text: "I take quite some time to understand things.", entry: "entry.1693330125" },
   { id: "q13", text: "When I do a problem or write important notes, I always do rough work and check again.", entry: "entry.489112697" },
   { id: "q14", text: "I tend to keep worrying about things going right and wrong.", entry: "entry.67302311" },
-  { id: "q15", text: "I have lot of friends in other sections and in hostels.", entry: "entry.1454567788" },
+  { id: "q15", text: "I have lot of friends in other sections and in hostels", entry: "entry.1454567788" },
   { id: "q16", text: "I do not like playing around with children too much.", entry: "entry.2133312763" },
   { id: "q17", text: "I get plenty of ideas on various issues.", entry: "entry.828271895" },
   { id: "q18", text: "I do not get angry easily.", entry: "entry.274849181" },
   { id: "q19", text: "Though I make plans, I often find it difficult to stick to it.", entry: "entry.2044618180" },
-  { id: "q20", text: "I don't think that I mix with many friends naturally and with ease.", entry: "entry.1850079564" },
-
+  { id: "q20", text: "I don’t think that I mix with many friends naturally and with ease.", entry: "entry.1850079564" },
+ 
   /* ---------- PAGE 2 : Q21 – Q40 ---------- */
   { id: "q21", text: "I am gentle and my heart often bleeds for others.", entry: "entry.1301381979" },
   { id: "q22", text: "I do not prefer to do multitasking.", entry: "entry.396977804" },
@@ -199,42 +199,42 @@ const QUESTIONS = [
   { id: "q32", text: "I find it very difficult to understand modern art.", entry: "entry.869228450" },
   { id: "q33", text: "I like to review my computer desktop frequently and keep them ordered well.", entry: "entry.1191504344" },
   { id: "q34", text: "My mood changes often.", entry: "entry.1321303028" },
-  { id: "q35", text: "I love family get together and take every opportunity to join them.", entry: "entry.1414964280" },
+  { id: "q35", text: "I love family get together and take every opportunity to join them", entry: "entry.1414964280" },
   { id: "q36", text: "I seldom appreciate people openly.", entry: "entry.1304304259" },
-  { id: "q37", text: "I don't miss a day to spend time reflecting on things, ideas, and decisions.", entry: "entry.2044529569" },
-  { id: "q38", text: "I don't get offended easily when criticized.", entry: "entry.182921743" },
+  { id: "q37", text: "I don’t miss a day to spend time reflecting on things, ideas, and decisions.", entry: "entry.2044529569" },
+  { id: "q38", text: "I don’t get offended easily when criticized.", entry: "entry.182921743" },
   { id: "q39", text: "When I work, there is always a mess that others have to clean up.", entry: "entry.256511492" },
-  { id: "q40", text: "I don't give opinion unless coaxed.", entry: "entry.86801602" },
-
+  { id: "q40", text: "I don’t give opinion unless coaxed.", entry: "entry.86801602" },
+ 
   /* ---------- PAGE 3 : Q41 – Q60 ---------- */
   { id: "q41", text: "I make people feel very much at ease.", entry: "entry.1056604768" },
   { id: "q42", text: "I am never interested in abstract things like universe, beauty etc.", entry: "entry.1559653462" },
   { id: "q43", text: "I follow a strict time table for my class/other works.", entry: "entry.1791331584" },
   { id: "q44", text: "I frequently feel lonely and left alone.", entry: "entry.1372559310" },
   { id: "q45", text: "I like to dress to be the centre of attraction.", entry: "entry.382667755" },
-  { id: "q46", text: "If I don't like a person, I don't hesitate to take a dig at him/her.", entry: "entry.452337042" },
+  { id: "q46", text: "If I don’t like a person, I don’t hesitate to take a dig at him/her.", entry: "entry.452337042" },
   { id: "q47", text: "I like to discuss concepts and principles.", entry: "entry.1992983143" },
   { id: "q48", text: "I seldom complain or grumble.", entry: "entry.1516749740" },
   { id: "q49", text: "I tend to put off things till the last moment.", entry: "entry.1564792377" },
-  { id: "q50", text: "I don't like to draw attention to myself.", entry: "entry.449922772" },
+  { id: "q50", text: "I don’t like to draw attention to myself.", entry: "entry.449922772" },
   { id: "q51", text: "Whenever I meet someone, I wish, waive and ask their well-being.", entry: "entry.197392682" },
   { id: "q52", text: "My imagination capacity is not too good.", entry: "entry.21902431" },
   { id: "q53", text: "I like to work very hard always and expect others to do so.", entry: "entry.1102215440" },
   { id: "q54", text: "I get irritated very quickly.", entry: "entry.1395372699" },
   { id: "q55", text: "I like to take charge of people and give them directions.", entry: "entry.1691420987" },
-  { id: "q56", text: "I don't spend too much time to understand other people's thoughts and feelings.", entry: "entry.1237463220" },
+  { id: "q56", text: "I don’t spend too much time to understand other people’s thoughts and feelings.", entry: "entry.1237463220" },
   { id: "q57", text: "I grasp complex things quickly.", entry: "entry.1738550538" },
-  { id: "q58", text: "I don't mind harsh criticism by others.", entry: "entry.1452255080" },
+  { id: "q58", text: "I don’t mind harsh criticism by others.", entry: "entry.1452255080" },
   { id: "q59", text: "I often neglect my work, self-development and duties.", entry: "entry.764890989" },
-  { id: "q60", text: "When guests come home, I don't show great enthusiasm to entertain them.", entry: "entry.1592956743" },
-
+  { id: "q60", text: "When guests come home, I don’t show great enthusiasm to entertain them.", entry: "entry.1592956743" },
+ 
   /* ---------- PAGE 4 : Q61 – Q80 ---------- */
   { id: "q61", text: "Whenever I feel someone is in trouble, I quickly comfort them.", entry: "entry.221685810" },
   { id: "q62", text: "I avoid people who do difficult and complex things.", entry: "entry.2082409257" },
   { id: "q63", text: "I always plan things systematically, write them and follow through.", entry: "entry.1173065786" },
   { id: "q64", text: "I feel upset often.", entry: "entry.1427967490" },
   { id: "q65", text: "I know how to keep others interested in my talk and actions.", entry: "entry.2119432402" },
-  { id: "q66", text: "I don't feel much concern for other people.", entry: "entry.1652079217" },
+  { id: "q66", text: "I don’t feel much concern for other people.", entry: "entry.1652079217" },
   { id: "q67", text: "I can handle a lot of information.", entry: "entry.740024284" },
   { id: "q68", text: "I rarely feel upset.", entry: "entry.1265124099" },
   { id: "q69", text: "I often spend time without considering its purposefulness.", entry: "entry.15917086" },
@@ -244,35 +244,35 @@ const QUESTIONS = [
   { id: "q73", text: "I do my work neatly, ensure that it is always perfect and expect others to do so.", entry: "entry.1066289774" },
   { id: "q74", text: "I tend to feel scared and threatened easily.", entry: "entry.741252437" },
   { id: "q75", text: "I like to be around with a lot of friends even if they are not close ones.", entry: "entry.795344038" },
-  { id: "q76", text: "I don't like to connect with other people just for the sake of it.", entry: "entry.583053188" },
+  { id: "q76", text: "I don’t like to connect with other people just for the sake of it.", entry: "entry.583053188" },
   { id: "q77", text: "I love to read difficult things like Shakespeare or some complex economic concepts.", entry: "entry.118462585" },
   { id: "q78", text: "I seldom care for small irritants.", entry: "entry.919311988" },
   { id: "q79", text: "Whenever I do a work, I usually have something left over to make it perfect.", entry: "entry.978679697" },
-  { id: "q80", text: "I don't chat a lot with others.", entry: "entry.655726392" },
-
+  { id: "q80", text: "I don’t chat a lot with others.", entry: "entry.655726392" },
+ 
   /* ---------- PAGE 5 : Q81 – Q100 ---------- */
-  { id: "q81",  text: "For me others are more important than I.", entry: "entry.551922020" },
-  { id: "q82",  text: "I don't enjoy reading an article which is difficult to understand.", entry: "entry.26051769" },
-  { id: "q83",  text: "I love order and regularity in class and in life.", entry: "entry.1480118578" },
-  { id: "q84",  text: "I get overwhelmed with emotions such as anger, sadness, fear etc.", entry: "entry.1554560889" },
-  { id: "q85",  text: "If there is a new committee to be formed, I prefer to let others take the lead.", entry: "entry.2083085765" },
-  { id: "q86",  text: "I am very secretive about my life and people cannot come to know me easily.", entry: "entry.1416261568" },
-  { id: "q87",  text: "I don't like to dig deeper and deeper into a subject.", entry: "entry.995887886" },
-  { id: "q88",  text: "I show coolness always.", entry: "entry.1443288515" },
-  { id: "q89",  text: "I get distracted easily.", entry: "entry.552316277" },
-  { id: "q90",  text: "If someone insults me, I prefer to bottle up my feelings rather than talk it out with him/her.", entry: "entry.1072067307" },
-  { id: "q91",  text: "I take every opportunity to help others even if the job is small.", entry: "entry.485479235" },
-  { id: "q92",  text: "I prefer to do routine things than ones with a lot of uncertainties.", entry: "entry.73040778" },
-  { id: "q93",  text: "If I see something messy, I will always clean it up.", entry: "entry.1247888621" },
-  { id: "q94",  text: "I get caught up in personal problems and tend to take a long time to resolve them.", entry: "entry.362479496" },
-  { id: "q95",  text: "I can handle challenging situations like organizing an event for an institution.", entry: "entry.1640685985" },
-  { id: "q96",  text: "Before I take a decision, I don't particularly examine its impact on feelings on all others.", entry: "entry.1012002548" },
-  { id: "q97",  text: "I like to try out new things even if it is risky.", entry: "entry.393874733" },
-  { id: "q98",  text: "I rarely lose my temper.", entry: "entry.220324117" },
-  { id: "q99",  text: "My colleagues envy my room/office and work station for its systematic arrangements.", entry: "entry.1650708546" },
+  { id: "q81",  text: "For me others are more important than I.",  entry: "entry.551922020" },
+  { id: "q82",  text: "I don’t enjoy reading an article which is difficult to understand.",  entry: "entry.26051769" },
+  { id: "q83",  text: "I love order and regularity in class and in life.",  entry: "entry.1480118578" },
+  { id: "q84",  text: "I get overwhelmed with emotions such as anger, sadness, fear etc.",  entry: "entry.1554560889" },
+  { id: "q85",  text: "If there is a new committee to be formed, I prefer to let others take the lead.",  entry: "entry.2083085765" },
+  { id: "q86",  text: "I am very secretive about my life and people cannot come to know me easily.",  entry: "entry.1416261568" },
+  { id: "q87",  text: "I don’t like to dig deeper and deeper into a subject.",  entry: "entry.995887886" },
+  { id: "q88",  text: "I show coolness always.",  entry: "entry.1443288515" },
+  { id: "q89",  text: "I get distracted easily.",  entry: "entry.552316277" },
+  { id: "q90",  text: "If someone insults me, I prefer to bottle up my feelings rather than talk it out with him/her.",  entry: "entry.1072067307" },
+  { id: "q91",  text: "I take every opportunity to help others even if the job is small.",  entry: "entry.485479235" },
+  { id: "q92",  text: "I prefer to do routine things than ones with a lot of uncertainties.",  entry: "entry.73040778" },
+  { id: "q93",  text: "If I see something messy, I will always clean it up.",  entry: "entry.1247888621" },
+  { id: "q94",  text: "I get caught up in personal problems and tend to take a long time to resolve them.",  entry: "entry.362479496" },
+  { id: "q95",  text: "I can handle challenging situations like organizing an event for an institution.",  entry: "entry.1640685985" },
+  { id: "q96",  text: "Before I take a decision, I don’t particularly examine its impact on feelings on all others.",  entry: "entry.1012002548" },
+  { id: "q97",  text: "I like to try out new things even if it is risky.",  entry: "entry.393874733" },
+  { id: "q98",  text: "I rarely lose my temper.",  entry: "entry.220324117" },
+  { id: "q99",  text: "My colleagues envy my room/office and work station for its systematic arrangements.",  entry: "entry.1650708546" },
   { id: "q100", text: "I am a very private person.", entry: "entry.1914377303" }
 ];
-
+ 
 /* ============================================================
    3) LIKERT SCALE
    ============================================================ */
@@ -285,13 +285,13 @@ const LIKERT = [
   "Agree",               // 6
   "Strongly agree"       // 7
 ];
-
+ 
 /* ============================================================
    4) APP
    ============================================================ */
 const PER_PAGE = 20;
 const TOTAL_PAGES = Math.ceil(QUESTIONS.length / PER_PAGE);
-
+ 
 const form       = document.getElementById("survey");
 const bar        = document.getElementById("bar");
 const pageLabel  = document.getElementById("pageLabel");
@@ -302,19 +302,19 @@ const submitBtn  = document.getElementById("submitBtn");
 const alertBox   = document.getElementById("alert");
 const bottomBar  = document.getElementById("bottomBar");
 const doneScreen = document.getElementById("done");
-
+ 
 let page = 1;
-
+ 
 /* -------- helpers -------- */
 function pageQuestions(p) {
   return QUESTIONS.slice((p - 1) * PER_PAGE, p * PER_PAGE);
 }
-
+ 
 function pageOfQid(qid) {
   const idx = QUESTIONS.findIndex(q => q.id === qid);
   return idx < 0 ? 1 : Math.floor(idx / PER_PAGE) + 1;
 }
-
+ 
 /* -------- build one question card -------- */
 function buildQuestion(q) {
   const card = document.createElement("div");
@@ -322,82 +322,81 @@ function buildQuestion(q) {
   card.dataset.qid = q.id;
   card.setAttribute("role", "radiogroup");
   card.setAttribute("aria-labelledby", "lbl-" + q.id);
-
+ 
   const text = document.createElement("p");
   text.className = "qtext";
   text.id = "lbl-" + q.id;
   text.textContent = q.text;
   card.appendChild(text);
-
+ 
   const scale = document.createElement("div");
   scale.className = "scale";
-
+ 
   LIKERT.forEach((label, i) => {
     const value = i + 1;
-
+ 
     const opt = document.createElement("label");
     opt.className = "opt";
-    opt.title = label;
-
+ 
     const input = document.createElement("input");
     input.type = "radio";
     input.name = q.id;
     input.value = String(value);
     input.setAttribute("aria-label", q.text + " — " + label);
-
-    const num = document.createElement("span");
-    num.className = "num";
-    num.textContent = String(value);
-
+ 
+    const span = document.createElement("span");
+    span.className = "num";
+    span.textContent = label;  // Text instead of numbers
+ 
     opt.appendChild(input);
-    opt.appendChild(num);
+    opt.appendChild(span);
     scale.appendChild(opt);
   });
-
+ 
   card.appendChild(scale);
   return card;
 }
-
+ 
 /* -------- build one page -------- */
 function buildPage(p) {
   const sec = document.createElement("section");
   sec.className = "page";
   sec.dataset.page = p;
   if (p !== 1) sec.hidden = true;
-
+ 
   /* name field — page 1 only */
   if (p === 1) {
     const nb = document.createElement("div");
     nb.className = "nameblock";
-
+ 
     const lbl = document.createElement("label");
     lbl.setAttribute("for", "respondentName");
     lbl.textContent = "Your name";
-
+ 
     const inp = document.createElement("input");
     inp.type = "text";
     inp.id = "respondentName";
     inp.name = "respondentName";
     inp.placeholder = "Enter your full name";
     inp.autocomplete = "name";
-
+ 
     nb.appendChild(lbl);
     nb.appendChild(inp);
     sec.appendChild(nb);
   }
-
+ 
   /* scale legend */
   const legend = document.createElement("div");
   legend.className = "legend";
   legend.textContent = "1 = Strongly disagree  •  4 = Neutral  •  7 = Strongly agree";
   sec.appendChild(legend);
-
+ 
   /* questions */
   pageQuestions(p).forEach(q => sec.appendChild(buildQuestion(q)));
-
+ 
   return sec;
 }
-
+ 
 /* -------- render all pages -------- */
 function render() {
   for (let p = 1; p <= TOTAL_PAGES; p++) {
@@ -405,20 +404,20 @@ function render() {
   }
   updateUI();
 }
-
+ 
 /* -------- UI state -------- */
 function updateUI() {
   pageLabel.textContent = "Page " + page + " of " + TOTAL_PAGES;
-
+ 
   const pct = Math.round((page / TOTAL_PAGES) * 100);
   bar.style.width = pct + "%";
   pctLabel.textContent = pct + "%";
-
+ 
   prevBtn.hidden   = page === 1;
   nextBtn.hidden   = page === TOTAL_PAGES;
   submitBtn.hidden = page !== TOTAL_PAGES;
 }
-
+ 
 /* -------- navigation -------- */
 function showPage(target) {
   form.querySelector('.page[data-page="' + page + '"]').hidden = true;
@@ -427,100 +426,100 @@ function showPage(target) {
   window.scrollTo({ top: 0, behavior: "smooth" });
   updateUI();
 }
-
+ 
 /* -------- validation -------- */
 function validatePage(p) {
   const problems = [];
-
+ 
   if (p === 1) {
     const n = document.getElementById("respondentName");
     if (!n.value.trim()) problems.push(n);
   }
-
+ 
   pageQuestions(p).forEach(q => {
     if (!form.querySelector('input[name="' + q.id + '"]:checked')) {
       problems.push(form.querySelector('.q[data-qid="' + q.id + '"]'));
     }
   });
-
+ 
   return problems;
 }
-
+ 
 function validateAll() {
   const problems = [];
-
+ 
   const n = document.getElementById("respondentName");
   if (!n.value.trim()) problems.push(n);
-
+ 
   QUESTIONS.forEach(q => {
     if (!form.querySelector('input[name="' + q.id + '"]:checked')) {
       problems.push(form.querySelector('.q[data-qid="' + q.id + '"]'));
     }
   });
-
+ 
   return problems;
 }
-
+ 
 function flagProblems(problems) {
   problems.forEach(el => {
     if (el && el.classList.contains("q")) el.classList.add("missing");
     else if (el) el.classList.add("missing-input");
   });
-
+ 
   if (problems.length) {
     const first = problems[0];
-    if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+    first.scrollIntoView({ behavior: "smooth", block: "center" });
     setAlert("Please answer all items on this page.");
   }
 }
-
+ 
 function setAlert(msg) {
   alertBox.textContent = msg || "";
 }
 function clearAlert() {
   alertBox.textContent = "";
 }
-
+ 
 /* -------- payload -------- */
 function buildPayload() {
   const data = new URLSearchParams();
-
+ 
   data.append(CONFIG.nameEntry, document.getElementById("respondentName").value.trim());
-
+ 
   QUESTIONS.forEach(q => {
     const checked = form.querySelector('input[name="' + q.id + '"]:checked');
     data.append(q.entry, checked ? checked.value : "");
   });
-
+ 
   return data;
 }
-
+ 
 /* -------- send to Google Forms -------- */
 async function sendToGoogleForms() {
   const body = buildPayload();
-
+ 
   await fetch(CONFIG.formAction, {
     method: "POST",
-    mode: "no-cors",
+    mode: "no-cors",  // Google Forms blocks CORS reads; this still delivers
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: body.toString()
   });
 }
-
+ 
 /* -------- events -------- */
 form.addEventListener("change", e => {
   const card = e.target.closest(".q");
   if (card) card.classList.remove("missing");
   clearAlert();
 });
-
+ 
 form.addEventListener("input", e => {
   if (e.target.id === "respondentName") {
     e.target.classList.remove("missing-input");
     clearAlert();
   }
 });
-
+ 
 nextBtn.addEventListener("click", () => {
   const problems = validatePage(page);
   if (problems.length) {
@@ -530,30 +529,30 @@ nextBtn.addEventListener("click", () => {
   clearAlert();
   showPage(page + 1);
 });
-
+ 
 prevBtn.addEventListener("click", () => {
   clearAlert();
   showPage(page - 1);
 });
-
+ 
 submitBtn.addEventListener("click", async () => {
   const problems = validateAll();
-
+ 
   if (problems.length) {
     const first = problems[0];
     const targetPage = first.classList.contains("q")
       ? pageOfQid(first.dataset.qid)
       : 1;
-
+ 
     if (targetPage !== page) showPage(targetPage);
     flagProblems(problems);
     return;
   }
-
+ 
   clearAlert();
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting…";
-
+ 
   try {
     await sendToGoogleForms();
     form.hidden = true;
@@ -567,10 +566,10 @@ submitBtn.addEventListener("click", async () => {
     setAlert("Submission failed. Please check your connection and try again.");
   }
 });
-
+ 
 /* -------- go -------- */
 render();
 </script>
-
+ 
 </body>
 </html>
