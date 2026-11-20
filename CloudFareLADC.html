@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campaign</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+body { min-height: 100vh; background: #f4f6fb; color: #1a1a2e; padding: 2rem 1rem; }
+[hidden] { display: none !important; }
+
+.brand { text-align: center; margin-top: 2rem; }
+.brand .logo { width: 90px; height: 90px; object-fit: contain; margin-bottom: 1rem; }
+.brand h1 { font-size: 2rem; letter-spacing: .5px; }
+.brand .institute { font-size: .9rem; color: #666; margin-top: .25rem; }
+
+.roles {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 2rem; max-width: 900px; margin: 4rem auto 0; padding: 0 1rem;
+}
+.role-card {
+  background: linear-gradient(145deg, #ffffff, #e6ecff);
+  border-radius: 24px; padding: 3rem 1.5rem;
+  text-align: center; text-decoration: none; color: inherit;
+  box-shadow: 0 10px 25px rgba(50,80,180,.15);
+  border: 1px solid #dbe4ff;
+  transition: transform .2s, box-shadow .2s;
+}
+.role-card:hover { transform: translateY(-6px); box-shadow: 0 18px 35px rgba(50,80,180,.25); }
+.role-card h2 { font-size: 1.6rem; margin-bottom: .5rem; }
+.role-card p  { color: #556; font-size: .9rem; }
+
+.login-box {
+  max-width: 420px; margin: 6rem auto; background: #fff;
+  padding: 2.5rem; border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(50,80,180,.12);
+}
+.login-box h2 { text-align: center; margin-bottom: 1.5rem; }
+.login-box label { display: block; font-size: .85rem; color: #556; margin-bottom: .35rem; }
+.login-box input {
+  width: 100%; padding: .8rem 1rem; margin-bottom: 1.2rem;
+  border-radius: 10px; border: 1px solid #ccd; font-size: 1rem;
+}
+.login-box input:focus { outline: 2px solid #3b5bdb; outline-offset: 1px; }
+.login-box button {
+  width: 100%; padding: .9rem; border: none; border-radius: 10px;
+  background: #3b5bdb; color: #fff; font-size: 1rem; cursor: pointer;
+}
+.login-box button:hover:not(:disabled) { background: #2c46b0; }
+.login-box button:disabled { opacity: .6; cursor: wait; }
+.err { color: #d23; text-align: center; margin-top: 1rem; font-size: .9rem; line-height: 1.4; }
+.err small { display: block; margin-top: .35rem; color: #888; font-size: .72rem; word-break: break-all; text-align: left; }
+.back { text-align: center; margin-top: 1.5rem; font-size: .85rem; }
+.back a { color: #556; text-decoration: none; }
+.back a:hover { color: #3b5bdb; }
+
+.dash { max-width: 780px; margin: 3rem auto; }
+.dash h1 { text-align: center; margin-bottom: 2rem; }
+.assessment-row {
+  background: #fff; border-radius: 16px; padding: 1.2rem 1.5rem;
+  margin-bottom: 1rem; display: flex; justify-content: space-between;
+  align-items: center; box-shadow: 0 6px 18px rgba(50,80,180,.08);
+  text-decoration: none; color: inherit; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.assessment-row:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(50,80,180,.14); }
+.assessment-row.done { background: #e7f8ec; cursor: default; }
+.assessment-row.done:hover { transform: none; }
+.assessment-row .status { color: #3b5bdb; font-weight: 600; font-size: .9rem; }
+.assessment-row.done .status { color: #2a9d54; }
+.assessment-row .meta { color: #889; font-size: .78rem; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ================= HOME ================= -->
+<section id="view-home" class="view">
+  <header class="brand">
+    <img src="assets/logo.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+    <h1>Campaign Name Here</h1>
+    <p class="institute">Institute Name</p>
+  </header>
+  <section class="roles">
+    <a href="#login?role=Taker"   class="role-card"><h2>Taker</h2><p>Enrollment-based access</p></a>
+    <a href="#login?role=Advisor" class="role-card"><h2>Advisor</h2><p>Advisor portal</p></a>
+    <a href="#login?role=Admin"   class="role-card"><h2>Admin</h2><p>Administrator access</p></a>
+  </section>
+</section>
+
+<!-- ================= LOGIN ================= -->
+<section id="view-login" class="view" hidden>
+  <div class="login-box">
+    <h2 id="roleTitle">Login</h2>
+    <form id="loginForm" autocomplete="off">
+      <label for="enroll">Enrollment Number</label>
+      <input id="enroll" required autocapitalize="characters">
+      <label for="code">Passcode</label>
+      <input id="code" type="password" required>
+      <button type="submit" id="submitBtnLogin">Login</button>
+    </form>
+    <p class="err" id="errMsg" hidden></p>
+    <p class="back"><a href="#home">← Back to home</a></p>
+  </div>
+</section>
+
+<!-- ================= DASHBOARD ================= -->
+<section id="view-dashboard" class="view" hidden>
+  <div class="dash">
+    <h1 id="welcome">Assessments</h1>
+    <div id="list"></div>
+    <p class="back"><a href="#logout">Log out</a></p>
+  </div>
+</section>
+
+<script>
+const API_BASE = "https://broken-term-9f64.kmarlapudi.workers.dev";
+
+/* Ordered list — must match keys in ASSESSMENT_URLS. */
+const ASSESSMENT_IDS = ["B5", "A2", "A3", "MLQ", "A5", "A6", "A7"];
+
+/* Each assessment lives in its own page. Same-origin, so sessionStorage carries over. */
+const ASSESSMENT_URLS = {
+  B5:  "/LADCTest/B5.html",
+  A2:  "/A2.html",
+  A3:  "/A3.html",
+  MLQ: "/LADCTest/MLQ.html",
+  A5:  "/A5.html",
+  A6:  "/A6.html",
+  A7:  "/A7.html"
+};
+
+/* Item counts (for dashboard label only). Keep in sync with each sub-page's QUESTIONS.length. */
+const ASSESSMENT_COUNTS = { B5: 3, A2: 55, A3: 45, MLQ: 3, A5: 40, A6: 60, A7: 50 };
+
+const $ = (s) => document.querySelector(s);
+
+function show(id) {
+  const target = document.getElementById(id);
+  if (!target) { console.error("show(): missing view id →", id); return; }
+  document.querySelectorAll(".view").forEach(v => { v.hidden = true; });
+  target.hidden = false;
+  window.scrollTo(0, 0);
+}
+function setError(msg, detail) {
+  const err = $("#errMsg");
+  err.innerHTML = "";
+  err.appendChild(document.createTextNode(msg));
+  if (detail) {
+    const d = document.createElement("small");
+    d.textContent = detail;
+    err.appendChild(d);
+  }
+  err.hidden = false;
+}
+function clearError() { $("#errMsg").hidden = true; }
+
+/* ---------------- login ---------------- */
+$("#loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("#submitBtnLogin");
+  clearError();
+  btn.disabled = true; btn.textContent = "Checking…";
+
+  const role   = new URLSearchParams(location.hash.split("?")[1] || "").get("role") || "Taker";
+  const enroll = $("#enroll").value.trim();
+  const code   = $("#code").value.trim();
+
+  try {
+    const res = await fetch(`${API_BASE}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ enroll, code })
+    });
+    const data = await res.json();
+
+    if (!data.ok) {
+      setError("Please check your enrollment ID and password and try again. Else contact the LADC team.");
+      btn.disabled = false; btn.textContent = "Login";
+      return;
+    }
+
+    sessionStorage.setItem("role",   role);
+    sessionStorage.setItem("enroll", enroll);
+    sessionStorage.setItem("name",   data.name);
+    sessionStorage.setItem("token",  data.token);
+
+    if (role === "Taker") {
+      await renderDashboard();
+      location.hash = "#dashboard";
+    } else {
+      alert(role + " dashboard coming soon.");
+      location.hash = "#home";
+    }
+  } catch (err) {
+    console.error(err);
+    setError("Could not reach the server. Check your internet and try again.", err.message);
+    btn.disabled = false; btn.textContent = "Login";
+  }
+});
+
+/* ---------------- dashboard ---------------- */
+async function renderDashboard() {
+  const enroll = sessionStorage.getItem("enroll");
+  const role   = sessionStorage.getItem("role");
+  const name   = sessionStorage.getItem("name");
+  const token  = sessionStorage.getItem("token");
+  if (!enroll || role !== "Taker" || !token) { location.hash = "#login?role=Taker"; return; }
+
+  $("#welcome").textContent = `Welcome, ${name || enroll}`;
+  const list = $("#list");
+  list.innerHTML = "<p style='text-align:center;color:#888'>Loading…</p>";
+
+  let assessStatus = {};
+  try {
+    const res = await fetch(`${API_BASE}/assessment-status`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+    const data = await res.json();
+    if (data.ok && data.status) assessStatus = data.status;
+  } catch (e) {
+    console.warn("assessment-status fetch failed", e);
+  }
+
+  list.innerHTML = "";
+  ASSESSMENT_IDS.forEach((id, idx) => {
+    const done  = !!assessStatus[id];
+    const count = ASSESSMENT_COUNTS[id] || 0;
+    const label = "Assessment " + (idx + 1);
+
+    const row = document.createElement("a");
+    row.className = "assessment-row" + (done ? " done" : "");
+    row.href = "javascript:void(0)";
+    row.innerHTML = `
+      <div>
+        <div>${label}</div>
+        <div class="meta">${count} items</div>
+      </div>
+      <span class="status">${done ? "Completed ✓" : "Pending"}</span>`;
+
+    if (!done) {
+      row.addEventListener("click", () => {
+        const url = ASSESSMENT_URLS[id];
+        if (!url) { alert("No page configured for " + id); return; }
+        location.href = url;
+      });
+    }
+    list.appendChild(row);
+  });
+  show("view-dashboard");
+}
+
+/* ---------------- router ---------------- */
+function route() {
+  try {
+    const hash = location.hash || "#home";
+    const view = hash.split("?")[0];
+    const role = new URLSearchParams(hash.split("?")[1] || "").get("role");
+
+    if (view === "#login") {
+      const titleEl = document.getElementById("roleTitle");
+      if (titleEl) titleEl.textContent = (role || "Taker") + " Login";
+
+      clearError();
+
+      const loginBtn = document.getElementById("submitBtnLogin");
+      if (loginBtn) { loginBtn.disabled = false; loginBtn.textContent = "Login"; }
+
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm) loginForm.reset();
+
+      show("view-login");
+    } else if (view === "#dashboard") {
+      renderDashboard();
+    } else if (view === "#logout") {
+      sessionStorage.clear();
+      location.hash = "#home";
+    } else {
+      show("view-home");
+    }
+  } catch (err) {
+    console.error("route() failed:", err);
+    try { show("view-home"); } catch (_) {}
+  }
+}
+window.addEventListener("hashchange", route);
+window.addEventListener("DOMContentLoaded", route);
+</script>
+</body>
+</html>
