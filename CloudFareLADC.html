@@ -173,11 +173,15 @@ $("#loginForm").addEventListener("submit", async (e) => {
     });
     const data = await res.json();
 
-    if (!data.ok) {
-      setError("Please check your enrollment ID and password and try again. Else contact the LADC team.");
-      btn.disabled = false; btn.textContent = "Login";
-      return;
-    }
+if (!data.ok) {
+  console.error("Login API response:", data);
+  setError(
+    `Login failed: ${data.error || data.message || JSON.stringify(data)}`
+  );
+  btn.disabled = false;
+  btn.textContent = "Login";
+  return;
+}
 
     sessionStorage.setItem("role",   role);
     sessionStorage.setItem("enroll", enroll);
