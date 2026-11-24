@@ -78,35 +78,6 @@
    </div>
 <div class="progress"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText"></div></div>
 
-<!-- PAGE 1: DEMOGRAPHICS + CONSENT + GUIDELINES -->
-<section class="page active" id="page-1">
-    <div class="card"><div class="card-accent"></div><div class="card-body"><div class="title">LADC Assessment</div><div class="subtitle">Please complete the demographic information below and provide consent before beginning the assessment.</div></div></div>
-    
-    <div class="question"><div style="background:#FFF4CE;border:1px solid #FFD335;padding:10px 12px;border-radius:2px"><strong>Informed Consent:</strong> By participating, you agree that your responses may be used for academic and research purposes.</div></div>
-    <div class="two-col">
-        <div class="question"><div class="label">Full Name <span class="required">*</span></div><input id="name" type="text" /><div class="error" id="nameError">Please enter your name.</div></div>
-        <div class="question"><div class="label">Manipal Email <span class="required">*</span></div><input id="email" type="email" /><div class="error" id="emailError">Please enter a valid email address.</div></div>
-    </div>
-    <div class="two-col">
-        <div class="question"><div class="label">Age <span class="required">*</span></div><input id="age" type="number" min="18" max="99" /><div class="error" id="ageError">Please enter a valid age.</div></div>
-        <div class="question"><div class="label">Gender <span class="required">*</span></div><select id="gender"><option value="">Select an option</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select><div class="error" id="genderError">Please select an option.</div></div>
-    </div>
-    <div class="question"><div class="label">Full Enrollment Number of MAHE/TAPMI <span class="required">*</span></div><input id="identifier" type="text" /></div>
-    <div class="guidelines-box">
-        <h3 style="margin-bottom:10px;">Guidelines</h3>
-        <ol style="padding-left:20px; color:#605E5C; line-height:1.8;">
-            <li>You will be shown two pictures. One picture at a time.</li>
-            <li>First the Picture 1 will be shown for 15 seconds.</li>
-            <li>Watch carefully the people in the picture, their names and their emotions.</li>
-            <li>Select one option and click Next.</li>
-            <li>You cannot go back.</li>
-        </ol>
-        <div class="consent"><input type="checkbox" id="consent" /><label for="consent">I have read the information above and voluntarily consent to participate.</label></div>
-    </div>
-    <div class="error" id="startError" style="margin-bottom:12px">Please complete all required fields and provide consent.</div>
-    <button class="btn" id="startBtn" onclick="startAssessment()">Begin Assessment ›</button>
-</section>
-
 <!-- EXAMPLE QUESTION PAGE (before image 1) -->
 <section class="page" id="page-example">
     <div class="card"><div class="card-accent"></div><div class="card-body">
