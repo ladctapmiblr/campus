@@ -1,1 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LADC · Assessment 6</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: "Segoe UI", system-ui, sans-serif; background: #FAF9F8; color: #323130; font-size: 14px; line-height: 1.5; min-height: 100vh; }
+        .topbar { height: 6px; background: #6264A7; }
+        .header { background: #fff; border-bottom: 1px solid #EDEBE9; padding: 13px 24px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .logo-img { height: 38px; width: auto; display: block; }
+        .logo-text { font-weight: 700; color: #6264A7; font-size: 18px; letter-spacing: 0.3px; }
+        .sep { width: 1px; height: 28px; background: #C8C6C4; }
+        .header-title { color: #605E5C; font-size: 14px; }
+        .progress { background: #fff; border-bottom: 1px solid #EDEBE9; padding: 8px 24px; display: flex; gap: 12px; align-items: center; }
+        .progress-bar { height: 4px; flex: 1; background: #EDEBE9; border-radius: 99px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #0078D4; transition: width 0.3s ease; }
+        .progress-text { font-size: 12px; color: #605E5C; white-space: nowrap; }
+        .page { display: none; max-width: 720px; margin: 28px auto; padding: 0 16px 80px; }
+        .page.active { display: block; animation: slide 0.25s ease; }
+        @keyframes slide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .card, .question, .instructions, .example-box { background: #fff; border-radius: 4px; box-shadow: 0 1.6px 3.6px rgba(0,0,0,0.13), 0 0.3px 0.9px rgba(0,0,0,0.108); margin-bottom: 16px; }
+        .card-accent { height: 5px; background: #6264A7; }
+        .card-body { padding: 28px 32px 32px; }
+        .title { font-size: 24px; font-weight: 700; line-height: 1.25; margin-bottom: 7px; }
+        .subtitle { color: #605E5C; line-height: 1.6; }
+        .question { padding: 20px 24px; }
+        .label { font-weight: 600; margin-bottom: 9px; }
+        .required { color: #D13438; font-size: 12px; }
+        input, select { width: 100%; padding: 9px 10px; font: inherit; border: 1px solid #C8C6C4; border-radius: 2px; background: #fff; }
+        input:focus, select:focus { outline: none; border-color: #0078D4; box-shadow: 0 0 0 2px #0078D4; }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media(max-width:520px){ .two-col { grid-template-columns: 1fr; } }
+        .instructions { padding: 26px 32px; border-left: 5px solid #6264A7; }
+        .instructions h3 { font-size: 18px; margin-bottom: 10px; }
+        .instructions ol { padding-left: 20px; color: #605E5C; line-height: 1.8; }
+        .consent { display: flex; gap: 10px; margin-top: 18px; padding: 14px; background: #EFF6FC; border: 1px solid #C7E0F4; border-radius: 4px; }
+        .consent input { width: 18px; height: 18px; flex-shrink: 0; }
+        .btn { background: #0078D4; border: 1px solid #0078D4; color: #fff; padding: 9px 22px; border-radius: 2px; font: inherit; font-weight: 600; cursor: pointer; }
+        .btn:hover:not(:disabled) { background: #106EBE; }
+        .btn:disabled { background: #EDEBE9; border-color: #EDEBE9; color: #A19F9D; cursor: not-allowed; }
+        .error { display: none; color: #D13438; font-size: 12px; margin-top: 5px; }
+        .image-frame { width: 100%; aspect-ratio: 16/10; background: #1b1b1b; display: flex; align-items: center; justify-content: center; overflow: hidden; margin: 16px 0; }
+        .image-frame img { width: 100%; height: 100%; object-fit: contain; }
+        .placeholder { color: rgba(255,255,255,0.5); text-align: center; padding: 20px; }
+        .countdown { text-align: center; margin: 16px 0; }
+        .countdown-number { font-size: 28px; font-weight: 700; color: #0078D4; }
+        .countdown-note { font-size: 12px; color: #605E5C; }
+        .choices { display: flex; flex-direction: column; gap: 8px; }
+        .choice { display: flex; align-items: center; gap: 10px; padding: 13px; border: 1px solid #C8C6C4; border-radius: 3px; cursor: pointer; }
+        .choice:hover { background: #EFF6FC; border-color: #C7E0F4; }
+        .choice input { width: 18px; height: 18px; accent-color: #0078D4; }
+        .question-number { display: none; }
+        .select-prompt { font-size: 15px; font-weight: 600; color: #323130; }
+        .qtext { font-size: 18px; font-weight: 500; margin-top: 4px; white-space: pre-wrap; }
+        .qtext-small { font-size: 14px; font-weight: 400; color: #605E5C; margin-top: 6px; font-style: italic; }
+        .submit-area { margin-top: 20px; text-align: center; }
+        .thankyou { text-align: center; padding: 42px 32px; }
+        .success { font-size: 48px; margin-bottom: 10px; }
+        .overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); display: none; align-items: center; justify-content: center; flex-direction: column; gap: 14px; z-index: 20; }
+        .overlay.active { display: flex; }
+        .spinner { width: 36px; height: 36px; border: 3px solid #EDEBE9; border-top-color: #0078D4; border-radius: 50%; animation: spin 0.7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .example-box { background: #F8F9FA; border-left: 4px solid #6264A7; padding: 16px 20px; margin: 12px 0; }
+        .example-box h4 { color: #6264A7; margin-bottom: 6px; }
+        .example-box .qtext { font-size: 16px; }
+        .guidelines-box { padding: 26px 32px; border-left: 5px solid #6264A7; background: #fff; border-radius: 4px; box-shadow: 0 1.6px 3.6px rgba(0,0,0,0.13), 0 0.3px 0.9px rgba(0,0,0,0.108); margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+<div class="overlay" id="overlay"><div class="spinner"></div><div>Submitting…</div></div>
+<div class="topbar"></div>
+<div class="header">
+    <img class="logo-img" src="https://github.com/kiranmarlapudi/LADCTest/blob/main/tapmi-bengaluru-2024-logo.png?raw=true" alt="Tapmi Bengaluru Logo" />
+    <span class="logo-text">LADC - Assessment 6</span>
+    <div class="sep"></div>
+   </div>
+<div class="progress"><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-text" id="progressText"></div></div>
 
+<!-- PAGE 1: DEMOGRAPHICS + CONSENT + GUIDELINES -->
+<section class="page active" id="page-1">
+    <div class="card"><div class="card-accent"></div><div class="card-body"><div class="title">LADC Assessment</div><div class="subtitle">Please complete the demographic information below and provide consent before beginning the assessment.</div></div></div>
+    
+    <div class="question"><div style="background:#FFF4CE;border:1px solid #FFD335;padding:10px 12px;border-radius:2px"><strong>Informed Consent:</strong> By participating, you agree that your responses may be used for academic and research purposes.</div></div>
+    <div class="two-col">
+        <div class="question"><div class="label">Full Name <span class="required">*</span></div><input id="name" type="text" /><div class="error" id="nameError">Please enter your name.</div></div>
+        <div class="question"><div class="label">Manipal Email <span class="required">*</span></div><input id="email" type="email" /><div class="error" id="emailError">Please enter a valid email address.</div></div>
+    </div>
+    <div class="two-col">
+        <div class="question"><div class="label">Age <span class="required">*</span></div><input id="age" type="number" min="18" max="99" /><div class="error" id="ageError">Please enter a valid age.</div></div>
+        <div class="question"><div class="label">Gender <span class="required">*</span></div><select id="gender"><option value="">Select an option</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select><div class="error" id="genderError">Please select an option.</div></div>
+    </div>
+    <div class="question"><div class="label">Full Enrollment Number of MAHE/TAPMI <span class="required">*</span></div><input id="identifier" type="text" /></div>
+    <div class="guidelines-box">
+        <h3 style="margin-bottom:10px;">Guidelines</h3>
+        <ol style="padding-left:20px; color:#605E5C; line-height:1.8;">
+            <li>You will be shown two pictures. One picture at a time.</li>
+            <li>First the Picture 1 will be shown for 15 seconds.</li>
+            <li>Watch carefully the people in the picture, their names and their emotions.</li>
+            <li>Select one option and click Next.</li>
+            <li>You cannot go back.</li>
+        </ol>
+        <div class="consent"><input type="checkbox" id="consent" /><label for="consent">I have read the information above and voluntarily consent to participate.</label></div>
+    </div>
+    <div class="error" id="startError" style="margin-bottom:12px">Please complete all required fields and provide consent.</div>
+    <button class="btn" id="startBtn" onclick="startAssessment()">Begin Assessment ›</button>
+</section>
+
+<!-- EXAMPLE QUESTION PAGE (before image 1) -->
+<section class="page" id="page-example">
+    <div class="card"><div class="card-accent"></div><div class="card-body">
+        <div class="title" style="font-size:20px">Example Question</div>
+        <div class="subtitle">Please review this example before you begin.</div>
+    </div></div>
+    <div class="example-box">
+        <div class="qtext" style="font-size:16px; font-weight:400; margin-top:6px;">
+What do you think XYZ in the picture was most likely feeling at the moment this picture was taken? 
+(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. 
+Select "I don't know" if you don't know what the correct option is).
+        </div>
+        <div style="margin-top:10px; display:flex; flex-direction:column; gap:4px; font-size:14px;">
+            <span>A. Bored</span>
+            <span>B. Hopeful</span>
+            <span>C. Stressed</span>
+            <span>D. Terrified</span>
+            <span>E. Shocked</span>
+            <span>F. Cannot determine/none of the above</span>
+            <span>G. Don't know</span>
+        </div>
+        <div style="margin-top:8px; color:#605E5C; font-size:14px; font-style:italic;">Some questions have choices up to H</div>
+    </div>
+    <div class="submit-area">
+        <button class="btn" onclick="goToImagePage(0)">Continue ›</button>
+    </div>
+</section>
+
+<!-- DYNAMIC PAGES -->
+<div id="dynamicPages"></div>
+
+<!-- THANK YOU PAGE (success message) -->
+<section class="page" id="page-thankyou">
+    <div class="card"><div class="card-accent" style="background:#107C10"></div><div class="thankyou">
+        <div class="success">✅</div>
+        <div class="title">Successfully Submitted!</div>
+        <div class="subtitle">Your response has been recorded successfully.</div>
+        <div id="responseId" style="font-size:12px;color:#605E5C;margin-top:14px"></div>
+        <div style="margin-top:20px; color:#107C10; font-weight:500;">Thank you for completing the assessment.</div>
+    </div></div>
+</section>
+
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none"></iframe>
+
+<script>
+/* =========================================================
+   CONFIG
+   ========================================================= */
+const IMAGE_URLS = [
+    "https://github.com/kiranmarlapudi/LADCTest/blob/main/EIPicture1.png?raw=true",
+    "https://github.com/kiranmarlapudi/LADCTest/blob/main/EIPicture2.png?raw=true"
+];
+
+// TIMERS: image1=15s, image1 repeat=20s, image2=15s, image2 repeat=20s
+const IMAGE_TIMERS = [15, 20, 15, 20];
+
+// 15 Questions with full options
+const QUESTIONS = [
+    {
+        text: `1. What do you think Ellen was most likely feeling at the moment this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Bored", "B. Hopeful", "C. Stressed", "D. Terrified", "E. Shocked", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `2. What do you think Stacy was most likely feeling at the moment this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Disgusted", "B. Excited", "C. Sad", "D. Frustrated", "E. Enraged", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `3. What do you think Steve was most likely feeling at the moment this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Neutral", "B. Grateful", "C. Amused", "D. Curious", "E. Joyful", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `4. You asked some people about this later and heard that Ellen was returning from a visit with her boyfriend, who has unexpectedly broken up with her. She had just finished talking with Stacy when others just joined them. Now that you know the context a little more, what do you think she was feeling?`,
+        note: ``,
+        options: ["A. Miserable", "B. Confused", "C. Neutral", "D. Sad", "E. Suspicious", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `5. You also realized that Stacy was telling this story to her friend in green. What do you think the lady in green top was feeling?`,
+        note: ``,
+        options: ["A. Bored", "B. Disinterested", "C. Neutral", "D. Surprised", "E. Cannot determine/none of the above", "F. Don't know"]
+    },
+    {
+        text: `6. In relation to the feeling you decided about what you think Stacy was feeling.`,
+        note: ``,
+        options: ["A. Frustrated", "B. Embarrassed", "C. Offended", "D. Neutral", "E. Surprised", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `7. You also learnt that Steve had just joined them when you saw the group. He had been having a little crush on Ellen; but had not seen her for long. Knowing this and seeing his expression, what do you think Steve was feeling?`,
+        note: ``,
+        options: ["A. Nervous", "B. Jealous", "C. Thrilled", "D. Pleased", "E. Calm", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `8. What do you think that Aisha was feeling when this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Impatient", "B. Bored", "C. Sad", "D. Excited", "E. Relaxed", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `9. What do you think that Claudet was feeling when this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Content", "B. Worried", "C. Neutral", "D. Excited", "E. Worried", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `10. What do you think that Serena was feeling when this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Angry", "B. Excited", "C. Neutral", "D. Curious", "E. Confused", "F. Content", "G. Cannot determine/none of the above", "H. Don't know"]
+    },
+    {
+        text: `11. What do you think that Erika was feeling when this picture was taken?`,
+        note: `(Please select "Cannot be determined..." if you think that what the person is feeling is not obvious. Select "I don't know" if you don't know what the correct option is).`,
+        options: ["A. Happy, sad combination", "B. Satisfied, indifferent combination", "C. Joyful, solemn combination", "D. Excited, frustrated combination", "E. Content, restless combination", "F. I cannot determine/none of the above.", "G. Don't know"]
+    },
+    {
+        text: `12. This picture was taken when the ladies were waiting for their bus. Aisha, Serena and Erika are friends and were having a little argument among them when Aisha joined them; but the both Serena and Erika were busy in their own little argument. If this was the situation, what do you think Aisha was feeling?`,
+        note: ``,
+        options: ["A. Lonely", "B. Bitter", "C. Worried", "D. Furious", "E. Surprised", "F. Cannot determine/none of the above", "G. Don't know"]
+    },
+    {
+        text: `13. Claudette was already sitting when waiting for the bus when Serena and Erika came arguing and sat near her. They don't know each other. Keeping this input, what do you think Claudette was feeling?`,
+        note: ``,
+        options: ["A. Jealous", "B. Ambivalent", "C. Confused", "D. Amused", "E. Cannot determine/none of the above", "F. Don't know"]
+    },
+    {
+        text: `14. Aisha, Serena and Erika had walked down arguing and sat in the bus stop together. The argument went on and Serena and Erika were together on one side of the argument while Aisha on the other end. Keeping this input in mind, what do you think Aisha was feeling?`,
+        note: ``,
+        options: ["A. Frustrated", "B. Lonely", "C. Isolated", "D. Furious", "E. Cannot determine/none of the above", "F. Don't know"]
+    },
+    {
+        text: `15. Claudette and Aisha were once friends, but not so. Keeping this in mind and the incident of argument between Aisha, Serena and Erika and Serena and Erika taking one side of the argument and Aisha the other side, what do you think Claudette is feeling?`,
+        note: ``,
+        options: ["A. Amused", "B. Pleased", "C. Happy", "D. Vindicated", "E. Cannot determine/none of the above", "F. Don't know"]
+    }
+];
+
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdDMUmpORuQi151G_8D5Gdt25MpICH9ZnY-8S93m5MibtlqnQ/formResponse";
+
+const FORM_FIELDS = {
+    name: "entry.1144805042",
+    email: "entry.1685474016",
+    age: "entry.1862794312",
+    gender: "entry.170282896",
+    identifier: "entry.2078033339",
+    q1: "entry.1524440936",
+    q2: "entry.697611605",
+    q3: "entry.602791300",
+    q4: "entry.2065719334",
+    q5: "entry.262283127",
+    q6: "entry.2047092147",
+    q7: "entry.1587421555",
+    q8: "entry.894106202",
+    q9: "entry.914700683",
+    q10: "entry.467460164",
+    q11: "entry.950144670",
+    q12: "entry.1728326805",
+    q13: "entry.1881951122",
+    q14: "entry.918545037",
+    q15: "entry.21332862"
+};
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let respondentData = { name: "", email: "", age: "", gender: "", identifier: "", answers: Array(15).fill("") };
+let imageTimer = null;
+let sessionId = (crypto.randomUUID ? crypto.randomUUID() : "session-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+
+/* =========================================================
+   BUILD PAGES
+   rounds: [imageIndex, timerIndex, firstQuestion]
+   ========================================================= */
+function buildAssessmentPages() {
+    const container = document.getElementById("dynamicPages");
+    const rounds = [
+        { imgIdx: 0, timerIdx: 0, startQ: 0, numQs: 4 },   // image1 15s → Q1-Q4
+        { imgIdx: 0, timerIdx: 1, startQ: 4, numQs: 3 },   // image1 repeat 20s → Q5-Q7
+        { imgIdx: 1, timerIdx: 2, startQ: 7, numQs: 4 },   // image2 15s → Q8-Q11
+        { imgIdx: 1, timerIdx: 3, startQ: 11, numQs: 4 }   // image2 repeat 20s → Q12-Q15
+    ];
+
+    rounds.forEach((round, rIdx) => {
+        // ---- IMAGE PAGE ----
+        const imgPage = document.createElement("section");
+        imgPage.className = "page";
+        imgPage.id = `image-page-${rIdx}`;
+        imgPage.innerHTML = `
+            <div class="card"><div class="card-accent"></div><div class="card-body">
+                <div class="title" style="font-size:20px">Please observe the image carefully</div>
+                <div class="subtitle">Watch the people, their names and emotions.</div>
+            </div></div>
+            <div class="question">
+                <div class="image-frame">
+                    <img src="${IMAGE_URLS[round.imgIdx]}" alt="Image ${rIdx+1}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" />
+                    <div class="placeholder" style="display:none">Image could not be loaded.</div>
+                </div>
+                <div class="countdown"><div class="countdown-number" id="countdown-${rIdx}">${IMAGE_TIMERS[round.timerIdx]}</div><div class="countdown-note">The questions will appear automatically after the timer.</div></div>
+            </div>`;
+        container.appendChild(imgPage);
+
+        // ---- QUESTION PAGES for this round ----
+        for (let i = 0; i < round.numQs; i++) {
+            const qIdx = round.startQ + i;
+            if (qIdx >= 15) break;
+            const page = document.createElement("section");
+            page.className = "page";
+            page.id = `question-page-${qIdx}`;
+            const opts = QUESTIONS[qIdx].options.map(o => `
+                <label class="choice"><input type="radio" name="q${qIdx}" value="${escapeHtml(o)}" onchange="selectAnswer(${qIdx}, '${escapeJs(o)}')" /><span>${escapeHtml(o)}</span></label>
+            `).join("");
+            
+            const isLast = (qIdx === 14); // Q15 is the last question
+            const buttonHtml = isLast
+                ? `<button class="btn" id="next-btn-${qIdx}" disabled onclick="submitFromLastQuestion()">Submit Response</button>`
+                : `<button class="btn" id="next-btn-${qIdx}" disabled onclick="nextQuestion(${qIdx})">Next ›</button>`;
+
+            // Build question text with note if present
+            let questionHtml = escapeHtml(QUESTIONS[qIdx].text);
+            if (QUESTIONS[qIdx].note) {
+                questionHtml += `<div class="qtext-small">${escapeHtml(QUESTIONS[qIdx].note)}</div>`;
+            }
+
+            page.innerHTML = `
+                <div class="card"><div class="card-accent"></div><div class="card-body">
+                    <div class="question-number" style="display:none">Question ${qIdx+1} of 15</div>
+                    <div class="select-prompt">Please select one answer</div>
+                    <div class="qtext">${questionHtml}</div>
+                </div></div>
+                <div class="question">
+                    <div class="choices">${opts}</div>
+                    <div class="submit-area">${buttonHtml}</div>
+                </div>`;
+            container.appendChild(page);
+        }
+    });
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[c])); }
+function escapeJs(s) { return String(s).replace(/\\/g,"\\\\").replace(/'/g,"\\'"); }
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+function showPage(pageId, step) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    const el = document.getElementById(pageId);
+    if (el) el.classList.add("active");
+    const total = 18;
+    const pct = Math.min(100, (step / total) * 100);
+    document.getElementById("progressFill").style.width = pct + "%";
+    if (pageId === "page-1") document.getElementById("progressText").textContent = "Getting Started";
+    else if (pageId === "page-thankyou") document.getElementById("progressText").textContent = "Complete";
+    else document.getElementById("progressText").textContent = "Assessment Progress";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* =========================================================
+   START
+   ========================================================= */
+function startAssessment() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const age = document.getElementById("age").value.trim();
+    const gender = document.getElementById("gender").value;
+    const identifier = document.getElementById("identifier").value.trim();
+    const consent = document.getElementById("consent").checked;
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const ageValid = age && Number(age) >= 18 && Number(age) <= 99;
+    document.getElementById("nameError").style.display = name ? "none" : "block";
+    document.getElementById("emailError").style.display = emailValid ? "none" : "block";
+    document.getElementById("ageError").style.display = ageValid ? "none" : "block";
+    document.getElementById("genderError").style.display = gender ? "none" : "block";
+    if (!(name && emailValid && ageValid && gender && consent)) {
+        document.getElementById("startError").style.display = "block";
+        return;
+    }
+    document.getElementById("startError").style.display = "none";
+    respondentData = { name, email, age, gender, identifier, answers: Array(15).fill("") };
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    showPage("page-example", 1);
+}
+
+/* =========================================================
+   GO TO IMAGE PAGE (with timer start)
+   ========================================================= */
+function goToImagePage(roundIndex) {
+    showPage(`image-page-${roundIndex}`, 2 + roundIndex * 2);
+    startImageTimer(roundIndex);
+}
+
+/* =========================================================
+   IMAGE TIMER
+   ========================================================= */
+function startImageTimer(roundIndex) {
+    clearInterval(imageTimer);
+    let remaining = IMAGE_TIMERS[roundIndex];
+    const el = document.getElementById(`countdown-${roundIndex}`);
+    if (el) el.textContent = remaining;
+    imageTimer = setInterval(() => {
+        remaining--;
+        if (el) el.textContent = remaining;
+        if (remaining <= 0) {
+            clearInterval(imageTimer);
+            const startQ = [0, 4, 7, 11][roundIndex];
+            showPage(`question-page-${startQ}`, 2 + roundIndex * 2 + 1);
+        }
+    }, 1000);
+}
+
+/* =========================================================
+   MCQ & NEXT
+   ========================================================= */
+function selectAnswer(qIdx, ans) {
+    respondentData.answers[qIdx] = ans;
+    const btn = document.getElementById(`next-btn-${qIdx}`);
+    if (btn) btn.disabled = false;
+}
+
+function nextQuestion(qIdx) {
+    if (!respondentData.answers[qIdx]) return;
+    // Determine next page based on sequence
+    if (qIdx < 3) {
+        showPage(`question-page-${qIdx+1}`, 3 + qIdx);
+    } else if (qIdx === 3) {
+        goToImagePage(1);
+    } else if (qIdx < 6) {
+        showPage(`question-page-${qIdx+1}`, 8 + (qIdx-4));
+    } else if (qIdx === 6) {
+        goToImagePage(2);
+    } else if (qIdx < 10) {
+        showPage(`question-page-${qIdx+1}`, 11 + (qIdx-7));
+    } else if (qIdx === 10) {
+        goToImagePage(3);
+    } else if (qIdx < 14) {
+        showPage(`question-page-${qIdx+1}`, 15 + (qIdx-11));
+    } else if (qIdx === 14) {
+        // Q15 (index 14) - this is the last question, but the submit button handles it
+        // This shouldn't be called directly as Q15 has its own submit button
+    }
+}
+
+/* special handler for Q15 submit button */
+function submitFromLastQuestion() {
+    if (!respondentData.answers[14]) return;
+    submitResponse();
+}
+
+/* =========================================================
+   SUBMIT - shows success message on thank you page
+   ========================================================= */
+function submitResponse() {
+    const data = respondentData;
+    const flat = { name: data.name, email: data.email, age: data.age, gender: data.gender, identifier: data.identifier };
+    for (let i = 0; i < 15; i++) flat[`q${i+1}`] = data.answers[i] || "";
+
+    document.getElementById("overlay").classList.add("active");
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = FORM_URL;
+    form.target = "hidden_iframe";
+    form.style.display = "none";
+    Object.entries(FORM_FIELDS).forEach(([key, entryId]) => {
+        if (!entryId || !flat.hasOwnProperty(key)) return;
+        const inp = document.createElement("input");
+        inp.type = "hidden";
+        inp.name = entryId;
+        inp.value = flat[key];
+        form.appendChild(inp);
+    });
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(() => {
+        if (document.body.contains(form)) form.remove();
+        document.getElementById("overlay").classList.remove("active");
+        document.getElementById("responseId").textContent = "Response ID: " + sessionId;
+        showPage("page-thankyou", 19);
+    }, 1800);
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+buildAssessmentPages();
+showPage("page-1", 0);
+</script>
+</body>
+</html>
