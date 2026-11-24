@@ -116,7 +116,7 @@ body { min-height: 100vh; background: #f4f6fb; color: #1a1a2e; padding: 2rem 1re
 const API_BASE = "https://black-snow-cd1d.ladc-tapmiblr.workers.dev";
 
 /* Ordered list — must match keys in ASSESSMENT_URLS. */
-const ASSESSMENT_IDS = ["B5", "A2", "A3", "MLQ", "A5", "A6", "A7"];
+const ASSESSMENT_IDS = ["B5", "EI", "EIPic", "MLQ", "FB", "PBT", "SELoc"];
 
 /* Each assessment lives in its own page. Same-origin, so sessionStorage carries over. */
 const ASSESSMENT_URLS = {
@@ -130,7 +130,7 @@ const ASSESSMENT_URLS = {
 };
 
 /* Item counts (for dashboard label only). Keep in sync with each sub-page's QUESTIONS.length. */
-const ASSESSMENT_COUNTS = { B5: 3, A2: 55, A3: 45, MLQ: 3, A5: 40, A6: 60, A7: 50 };
+const ASSESSMENT_COUNTS = { B5: 3, EI: 55, EIPic: 45, MLQ: 3, FB: 40, PBT: 60, SELoc: 50 };
 
 const $ = (s) => document.querySelector(s);
 
