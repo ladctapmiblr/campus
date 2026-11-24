@@ -502,6 +502,61 @@ idEnrollEl.textContent = ENROLL || "—";
 
 questions = QUESTIONS.map((q, i) => ({ ...q, id: THIS_ID + "_q" + (i + 1) }));
 renderSurvey();
+</style>
+
+<script>
+  // 1. Block Right-Click
+  document.addEventListener('contextmenu', function (e) {
+    e.preventDefault();
+  });
+
+  // 2. Block Copy / Cut Events Outside of Input Fields
+  document.addEventListener('copy', function (e) {
+    var tag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    if (tag !== 'input' && tag !== 'textarea') {
+      e.preventDefault();
+    }
+  });
+
+  document.addEventListener('cut', function (e) {
+    var tag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    if (tag !== 'input' && tag !== 'textarea') {
+      e.preventDefault();
+    }
+  });
+
+  // 3. Block F12, Inspect, Console, View Source, Save & Copy Shortcuts
+  document.addEventListener('keydown', function (e) {
+    var key = e.key ? e.key.toLowerCase() : '';
+
+    // F12
+    if (e.key === 'F12' || e.keyCode === 123) {
+      e.preventDefault();
+      return false;
+    }
+
+    // Ctrl+Shift+I/J/C (Windows/Linux) or Cmd+Option+I/J/C (Mac)
+    if (
+      (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'j' || key === 'c')) ||
+      (e.metaKey && e.altKey && (key === 'i' || key === 'j' || key === 'c'))
+    ) {
+      e.preventDefault();
+      return false;
+    }
+
+    // Ctrl+U / Cmd+U (View Source) and Ctrl+S / Cmd+S (Save HTML)
+    if ((e.ctrlKey || e.metaKey) && (key === 'u' || key === 's')) {
+      e.preventDefault();
+      return false;
+    }
+
+    // Block Ctrl+C / Cmd+C outside of input/textarea fields
+    var tag = e.target && e.target.tagName ? e.target.tagName.toLowerCase() : '';
+    if ((e.ctrlKey || e.metaKey) && key === 'c' && tag !== 'input' && tag !== 'textarea') {
+      e.preventDefault();
+      return false;
+    }
+  });
 </script>
 </body>
 </html>
